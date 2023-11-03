@@ -1,90 +1,101 @@
 import tkinter as tk
 
-
-def update_small_scale(*args):
-    big_number = big_number_scale.get()
-    boxNum=int(num_entry.get())
-    small_number_scale.config(from_=boxNum-maxBigNumbers, to=boxNum)
-    smalls = boxNum - big_number
-    small_number_scale.set(smalls)
-    small_number_label.config(text="Small Number (" + str(boxNum-maxBigNumbers) +"-" + str(boxNum) +"):")
+class configuration():
+    def __init__(self, num_of_numbers, big_numbers, small_numbers) -> None:
+        assert small_numbers + big_numbers == num_of_numbers
+        self.small_numbers = small_numbers
+        self.big_numbers = big_numbers
+        pass   
     
-def update_big_scale(*args):
-    small_number = small_number_scale.get()
-    boxNum=int(num_entry.get())
-    bigs = boxNum - small_number
-    big_number_scale.set(bigs)
     
-def update_num_entry(*args):
-    if int(num_entry.get()) <= 5:
-        num_entry.delete(0, tk.END)
-        num_entry.insert(0, str(defaultBoxNumber))
-    update_small_scale()
-
-def create_new_window():
-    new_root = tk.Tk()
-    new_root.title("New Window with Box")
-    box_label = tk.Label(new_root, text="This is a new window with a box.")
-    box_label.pack()
-    new_root.mainloop()
+class configurationGui():   
+    defaultBoxNumber = 6
+    defaultBigNumbers = 1
+    maxBigNumbers = 4
+    defaultSmallNumbers = defaultBoxNumber - defaultBigNumbers
     
-def submit():
-    num_of_numbers = num_entry.get()
-    big_number = big_number_scale.get()
-    small_number = small_number_scale.get()
-    print(f"Number of Numbers: {num_of_numbers}, Big Number: {big_number}, Small Number: {small_number}")
-    root.destroy()  # Destroy the old root window
-    create_new_window()  # Create a new root window
+    def __init__(self):
+        pass
+     
+    def update_small_scale(self, *args):
+        big_number = self.big_numbers_scale.get()
+        boxNum=int(self.num_entry.get())
+        self.small_numbers_scale.config(from_=boxNum-configurationGui.maxBigNumbers, to=boxNum)
+        smalls = boxNum - big_number
+        self.small_numbers_scale.set(smalls)
+        self.small_number_label.config(text="Small Number (" + str(boxNum-configurationGui.maxBigNumbers) +"-" + str(boxNum) +"):")
+        
+    def update_big_scale(self, *args):
+        small_number = self.small_numbers_scale.get()
+        boxNum=int(self.num_entry.get())
+        bigs = boxNum - small_number
+        self.big_numbers_scale.set(bigs)
+        
+    def update_num_entry(self, *args):
+        if int(self.num_entry.get()) < 5:
+            self.num_entry.delete(0, tk.END)
+            self.num_entry.insert(0, str(configurationGui.defaultBoxNumber))
+        self.update_small_scale()
+        
+    def submit(self):
+        num_of_numbers = self.num_entry.get()
+        big_numbers = self.big_numbers_scale.get()
+        small_numbers = self.small_numbers_scale.get()
+        self.conf = configuration(int(num_of_numbers), big_numbers, small_numbers)
+        print(f"Number of Numbers: {num_of_numbers}, Big Number: {big_numbers}, Small Number: {small_numbers}")
+        self.root.destroy()  # Destroy the old root window
     
+    def __create_widgets__(self):
+        # Create the main application window
+        self.root = tk.Tk()
+        self.root.title("Simple GUI Application")
 
-defaultBoxNumber = 6
-defaultBigNumbers = 1
-maxBigNumbers = 4
-defaultSmallNumbers = defaultBoxNumber - defaultBigNumbers
+        # Create a label for the number entry
+        self.num_label = tk.Label(self.root, text="Number of Numbers:")
+        self.num_label.pack()
 
-# Create the main application window
-root = tk.Tk()
-root.title("Simple GUI Application")
+        # Create an entry box for the number
+        self.num_entry = tk.Entry(self.root)
+        self.num_entry.insert(0, str(configurationGui.defaultBoxNumber))  # Set the default value to 6
+        self.num_entry.pack()
 
-# Create a label for the number entry
-num_label = tk.Label(root, text="Number of Numbers:")
-num_label.pack()
+        # Create a label for the big number scale
+        self.big_number_label = tk.Label(self.root, text="Big Number (0-4):")
+        self.big_number_label.pack()
 
-# Create an entry box for the number
-num_entry = tk.Entry(root)
-num_entry.insert(0, str(defaultBoxNumber))  # Set the default value to 6
-num_entry.pack()
+        # Create a scale widget for selecting big numbers
+        self.big_numbers_scale = tk.Scale(self.root, from_=0, to=4, orient="horizontal")
+        self.big_numbers_scale.pack()
+        self.big_numbers_scale.set(configurationGui.defaultBigNumbers)
 
-# Create a label for the big number scale
-big_number_label = tk.Label(root, text="Big Number (0-4):")
-big_number_label.pack()
+        # Create a label for the small number scale
+        self.small_number_label = tk.Label(self.root, text="Small Number (2-6):")
+        self.small_number_label.pack()
 
-# Create a scale widget for selecting big numbers
-big_number_scale = tk.Scale(root, from_=0, to=4, orient="horizontal")
-big_number_scale.pack()
-big_number_scale.set(defaultBigNumbers)
+        # Create a scale widget for selecting small numbers
+        self.small_numbers_scale = tk.Scale(self.root, from_=configurationGui.defaultBoxNumber-configurationGui.maxBigNumbers, 
+                                           to=configurationGui.defaultBoxNumber, orient="horizontal")
+        self.small_numbers_scale.pack()
+        self.small_numbers_scale.set(configurationGui.defaultSmallNumbers)
 
-# Create a label for the small number scale
-small_number_label = tk.Label(root, text="Small Number (2-6):")
-small_number_label.pack()
+        # Bind the update_small_scale function to changes in the self.big_number_scale
+        self.big_numbers_scale.bind("<Motion>", self.update_small_scale)
 
-# Create a scale widget for selecting small numbers
-small_number_scale = tk.Scale(root, from_=defaultBoxNumber-maxBigNumbers, to=defaultBoxNumber, orient="horizontal")
-small_number_scale.pack()
-small_number_scale.set(defaultSmallNumbers)
+        # Bind the update_small_scale function to changes in the self.big_number_scale
+        self.small_numbers_scale.bind("<Motion>", self.update_big_scale)
 
-# Bind the update_small_scale function to changes in the big_number_scale
-big_number_scale.bind("<Motion>", update_small_scale)
+        # Bind the update_num_entry function to changes in the num_entry
+        self.num_entry.bind("<FocusOut>", self.update_num_entry)
 
-# Bind the update_small_scale function to changes in the big_number_scale
-small_number_scale.bind("<Motion>", update_big_scale)
+        # Create a submit button
+        self.submit_button = tk.Button(self.root, text="Submit", command=self.submit)
+        self.submit_button.pack()
 
-# Bind the update_num_entry function to changes in the num_entry
-num_entry.bind("<FocusOut>", update_num_entry)
+    def createConfiguration(self):
+        self.__create_widgets__()        
+        # Start the GUI application
+        self.root.mainloop()
+        
+        return self.conf
+                
 
-# Create a submit button
-submit_button = tk.Button(root, text="Submit", command=submit)
-submit_button.pack()
-
-# Start the GUI application
-root.mainloop()

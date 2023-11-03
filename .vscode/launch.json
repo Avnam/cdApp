@@ -8,7 +8,7 @@
             "name": "Python: cd",
             "type": "python",
             "request": "launch",
-            "program": "p.py",
+            "program": "main.py",
             "console": "integratedTerminal"
         }
     ]
