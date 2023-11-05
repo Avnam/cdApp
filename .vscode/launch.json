@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: tst",
+            "type": "python",
+            "request": "launch",
+            "program": "game.py",
+            "console": "integratedTerminal"
         }
     ]
 }

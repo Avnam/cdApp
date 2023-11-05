@@ -1,8 +1,12 @@
 from re import X
 from conf import *
+from game import *
 
 configurationGui = configurationGui()
-configuration = configurationGui.createConfiguration()
+gameConfiguration = configurationGui.createConfiguration()
 
-print (configuration.small_numbers)
-print (configuration.big_numbers)
+print (gameConfiguration.small_numbers)
+print (gameConfiguration.big_numbers)
+
+game = gameGui(gameConfiguration)
+game.runGame()

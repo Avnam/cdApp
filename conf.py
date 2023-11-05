@@ -48,7 +48,7 @@ class configurationGui():
     def __create_widgets__(self):
         # Create the main application window
         self.root = tk.Tk()
-        self.root.title("Simple GUI Application")
+        self.root.title("numbers game configuration")
 
         # Create a label for the number entry
         self.num_label = tk.Label(self.root, text="Number of Numbers:")

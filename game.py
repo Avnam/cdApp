@@ -1,4 +1,3 @@
-from logging import config
 import tkinter as tk
 from conf import configuration
 import random
@@ -10,6 +9,7 @@ class gameGui():
         pass
 
     def generate_and_display_big_number(self, count, delay):
+        print("v")
         if count <= 0:
             return
         self.big_number = random.randint(100, 1000)
@@ -21,10 +21,15 @@ class gameGui():
         self.label.grid(row=0, column=index, padx=10)
 
     def create_numbers_with_delay(self, index, delay):
+        print("x")
         if index < len(self.listOfNumbers):
             self.create_number_label(index)
             index += 1
             self.root.after(delay, self.create_numbers_with_delay, index, delay)
+            
+    def submit(self, *args):
+        calc = self.calc.get()
+        print (eval(calc))
     
     def __create_widgets__(self):
         self.root = tk.Tk()
@@ -36,7 +41,7 @@ class gameGui():
 
         # Start generating and displaying the big number three times
         self.generate_and_display_big_number(3, 400)
-
+        
         # Create a frame for the horizontally aligned numbers
         self.numbers_frame = tk.Frame(self.root)
         self.numbers_frame.pack()
@@ -49,12 +54,26 @@ class gameGui():
 
         # Start creating numbers with a delay of 1/3 second
         self.create_numbers_with_delay(0, 333)
+        
+        # Create a label for the number entry
+        self.calc_label = tk.Label(self.root, text="your calc here:", font=("Helvetica", 24))
+        self.calc_label.pack()
+
+        # Create an entry box for the number
+        self.calc = tk.Entry(self.root, font=("Helvetica", 24))
+        self.calc.pack()
+        
+        # Create a submit button
+        self.submit_button = tk.Button(self.root, text="Submit", command=self.submit)
+        self.submit_button.pack()
     
+        self.calc.bind("<Return>", self.submit)
     def runGame(self):
         self.__create_widgets__()
+        
         print("widgets created")
         self.root.mainloop()
 
-x = configuration(6, 2, 4)
-y = gameGui(x)
-y.runGame()
+# x = configuration(6, 2, 4)
+# y = gameGui(x)
+# y.runGame()
