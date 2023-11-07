@@ -5,7 +5,7 @@ class configuration():
         assert small_numbers + big_numbers == num_of_numbers
         self.small_numbers = small_numbers
         self.big_numbers = big_numbers
-        pass   
+        pass
     
     
 class configurationGui():   

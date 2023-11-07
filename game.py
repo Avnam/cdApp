@@ -8,20 +8,18 @@ class gameGui():
         self.conf = configuration
         pass
 
-    def generate_and_display_big_number(self, count, delay):
-        print("v")
+    def generate_and_display_target(self, count, delay):
         if count <= 0:
             return
-        self.big_number = random.randint(100, 1000)
-        self.big_number_label.config(text=f"Big Number: {self.big_number}")
-        self.root.after(delay, self.generate_and_display_big_number, count - 1, delay)
+        self.target = random.randint(100, 1000)
+        self.target_label.config(text=f"Target: {self.target}")
+        self.root.after(delay, self.generate_and_display_target, count - 1, delay)
 
     def create_number_label(self, index):
         self.label = tk.Label(self.numbers_frame, text=str(self.listOfNumbers[index]), font=("Helvetica", 18))
         self.label.grid(row=0, column=index, padx=10)
 
     def create_numbers_with_delay(self, index, delay):
-        print("x")
         if index < len(self.listOfNumbers):
             self.create_number_label(index)
             index += 1
@@ -29,18 +27,21 @@ class gameGui():
             
     def submit(self, *args):
         calc = self.calc.get()
-        print (eval(calc))
+        evaled = eval(calc)
+        print (evaled)
+        if evaled==self.target:
+            self.root.destroy()
     
     def __create_widgets__(self):
         self.root = tk.Tk()
         self.root.title("numbers game!")
 
         # Create a label for the big number
-        self.big_number_label = tk.Label(self.root, text="", font=("Helvetica", 24))
-        self.big_number_label.pack()
+        self.target_label = tk.Label(self.root, text="", font=("Helvetica", 24))
+        self.target_label.pack()
 
         # Start generating and displaying the big number three times
-        self.generate_and_display_big_number(3, 400)
+        self.generate_and_display_target(7, 200)
         
         # Create a frame for the horizontally aligned numbers
         self.numbers_frame = tk.Frame(self.root)

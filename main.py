@@ -3,10 +3,12 @@ from conf import *
 from game import *
 
 configurationGui = configurationGui()
-gameConfiguration = configurationGui.createConfiguration()
 
-print (gameConfiguration.small_numbers)
-print (gameConfiguration.big_numbers)
+while 1:
+    gameConfiguration = configurationGui.createConfiguration()
 
-game = gameGui(gameConfiguration)
-game.runGame()
+    print (gameConfiguration.small_numbers)
+    print (gameConfiguration.big_numbers)
+
+    game = gameGui(gameConfiguration)
+    game.runGame()
