@@ -7,8 +7,10 @@ configurationGui = configurationGui()
 while 1:
     gameConfiguration = configurationGui.createConfiguration()
 
-    print (gameConfiguration.small_numbers)
-    print (gameConfiguration.big_numbers)
-
-    game = gameGui(gameConfiguration)
-    game.runGame()
+    if gameConfiguration != None:
+        print (gameConfiguration.small_numbers)
+        print (gameConfiguration.big_numbers)
+        game = gameGui(gameConfiguration)
+        game.runGame()
+    else:
+        break

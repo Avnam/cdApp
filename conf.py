@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import tkinter as tk
 
 class configuration():
@@ -92,6 +93,7 @@ class configurationGui():
         self.submit_button.pack()
 
     def createConfiguration(self):
+        self.conf = None
         self.__create_widgets__()        
         # Start the GUI application
         self.root.mainloop()
