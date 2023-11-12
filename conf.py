@@ -38,15 +38,19 @@ class configurationGui():
             self.num_entry.insert(0, str(configurationGui.defaultBoxNumber))
         self.update_small_scale()
         
-    def submit(self):
+    def submit(self, *args):
         num_of_numbers = self.num_entry.get()
         big_numbers = self.big_numbers_scale.get()
         small_numbers = self.small_numbers_scale.get()
         self.conf = configuration(int(num_of_numbers), big_numbers, small_numbers)
         print(f"Number of Numbers: {num_of_numbers}, Big Number: {big_numbers}, Small Number: {small_numbers}")
         self.root.destroy()  # Destroy the old root window
+        
+    def done(self, *args):
+        self.root.destroy()
     
     def __create_widgets__(self):
+                
         # Create the main application window
         self.root = tk.Tk()
         self.root.title("numbers game configuration")
@@ -90,14 +94,18 @@ class configurationGui():
 
         # Create a submit button
         self.submit_button = tk.Button(self.root, text="Submit", command=self.submit)
-        self.submit_button.pack()
+        self.submit_button.pack(pady=10)
+
+        self.root.bind("<Return>", self.submit)
+        self.root.bind("<Escape>", self.done)
 
     def createConfiguration(self):
         self.conf = None
         self.__create_widgets__()        
+        
         # Start the GUI application
         self.root.mainloop()
-        
+
         return self.conf
                 
 

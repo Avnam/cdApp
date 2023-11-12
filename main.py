@@ -11,6 +11,12 @@ while 1:
         print (gameConfiguration.small_numbers)
         print (gameConfiguration.big_numbers)
         game = gameGui(gameConfiguration)
-        game.runGame()
+        
+        while 1:
+            retValue = game.runGame()
+            if retValue == "done":
+                exit(0)
+            if retValue == "conf":
+                break
     else:
         break
