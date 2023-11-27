@@ -3,6 +3,8 @@ import tkinter as tk
 from conf import configuration
 import random
 import re
+import time
+from threading import Thread
 
 class gameGui():   
     
@@ -10,7 +12,50 @@ class gameGui():
         self.config = configuration
         self.geo = None
         self.cheats = False
+        self.closest = 0
         pass
+
+    def solve(self, target, numbers):
+        #print (numbers)
+        # for ops
+        if self.stopThread==True:
+            return False
+        
+        #time.sleep(1)
+        
+        for x in numbers:
+            if (x == target):
+                return True
+            if (abs(x - target) < abs(self.closest - target)):
+                self.closest = x
+            
+            
+            newNumbers = numbers.copy()
+            newNumbers.remove(x)
+            
+            for y in newNumbers:
+                newnewNumbers = newNumbers.copy()
+                newnewNumbers.remove(y)
+                if (self.solve(target, [x+y] + newnewNumbers) == True):
+                    print (x, "+", y, "=", x + y) 
+                    return True
+                if (self.solve(target, [x-y] + newnewNumbers) == True):
+                    print (x, "-", y, "=", x - y) 
+                    return True
+                if (self.solve(target, [x*y] + newnewNumbers) == True):
+                    print (x, "*", y, "=", x * y) 
+                    return True
+                if (y!= 0 and ((x % y) == 0) and self.solve(target, [x/y] + newnewNumbers) == True):
+                        print (x, "/", y, "=", x / y) 
+                        return True
+                
+        return False
+        
+    def commentsThread(self):
+        self.set_comment("good luck, lets see who find it first")
+        solving_thread = Thread(target = self.solve, args = (self.target, self.listOfNumbers))
+        solving_thread.start()
+        solving_thread.join()
     
     def getGeo(self):
         self.geo=self.root.geometry()
@@ -22,6 +67,11 @@ class gameGui():
         self.target_label.config(text=f"Target: {self.target}")
         self.root.after(delay, self.generate_and_display_target, count - 1, delay)
 
+    def display_target(self):
+        #self.generate_and_display_target(7, 200)
+        self.target = random.randint(100, 1000)
+        self.target_label.config(text=f"Target: {self.target}")
+
     def create_number_label(self, index):
         self.label = tk.Label(self.numbers_frame, text=str(self.listOfNumbers[index]), font=("Helvetica", 18))
         self.label.grid(row=0, column=index, padx=10)
@@ -32,6 +82,14 @@ class gameGui():
             index += 1
             self.root.after(delay, self.create_numbers_with_delay, index, delay)
             
+    def print_numbers(self):
+        #self.create_numbers_with_delay(0, 333)
+        ind = 0
+        for num in self.listOfNumbers:
+            self.label = tk.Label(self.numbers_frame, text=str(num), font=("Helvetica", 18))
+            self.label.grid(row=0, column=ind, padx=10)
+            ind+=1
+           
     def set_comment(self, str):
         self.comment.config(text=f"{str}")
     
@@ -51,6 +109,7 @@ class gameGui():
         elif str == "cheat":
             self.cheats = True
             self.set_comment("cheating are you..")
+            self.calc.delete(0, tk.END)
             return False
         
         # Use regular expression to find all numbers in the string
@@ -76,6 +135,8 @@ class gameGui():
 
     def closeWindow(self):
         self.getGeo()
+        
+        self.stopThread=True
         self.root.destroy()
     
     def check(self, *args):
@@ -131,7 +192,7 @@ class gameGui():
         self.target_label.pack()
 
         # Start generating and displaying the big number three times
-        self.generate_and_display_target(7, 200)
+        self.display_target()
         
         # Create a frame for the horizontally aligned numbers
         self.numbers_frame = tk.Frame(self.root)
@@ -144,7 +205,7 @@ class gameGui():
         self.listOfNumbers.extend(random.sample(smallNumberslist, self.config.small_numbers))
 
         # Start creating numbers with a delay of 1/3 second
-        self.create_numbers_with_delay(0, 333)
+        self.print_numbers()
         
         # Create a label for the number entry
         self.calc_label = tk.Label(self.root, text="your calc here:", font=("Helvetica", 24))
@@ -184,9 +245,14 @@ class gameGui():
         self.root.bind("<Escape>", self.done)
         
     def runGame(self):
+        self.stopThread = False
         self.__create_widgets__()
-        
         print("widgets created")
+        
+        self.comments_thread = Thread(target = self.commentsThread, args = ())
+        self.comments_thread.start()
         self.root.mainloop()
+
+        self.comments_thread.join()
         
         return self.retValue
